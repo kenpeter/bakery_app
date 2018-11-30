@@ -10,11 +10,24 @@ class App extends Component {
         let def = this.getDef();
         this.util = new Util(def);
 
+        /*
         this.state = {
             vs5_num: 10,
             mb11_num: 14,
             cf_num: 13,
         }
+        */
+
+
+        // test not combine num
+        this.state = {
+            vs5_num: 7,
+            mb11_num: 14,
+            cf_num: 13,
+        }
+
+
+
     }
 
     handleVs5(e) {
@@ -107,7 +120,7 @@ class App extends Component {
         let out = this.util.calCart(input);
 
         // output
-        //console.log(JSON.stringify(out, null, 4));
+        console.log(JSON.stringify(out, null, 4));
     }
 
     render() {

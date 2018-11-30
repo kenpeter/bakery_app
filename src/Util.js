@@ -30,16 +30,125 @@ export class Util {
             let out = this.comSum(itemDefArr, orderNum);
 
             // test
-            console.log('-- out --');
-            console.log(out);
+            //console.log('-- out --');
+            //console.log(out);
 
             res.push(out);
 
             // test
-            break;
+            //break;
         }
 
         return res;
+    }
+
+
+    handleMultiSubLists(arr) {
+        // 1 element return
+        if(arr.length === 1) {
+            return arr;
+        }
+
+        // we know mini, how many pack we have
+        // and we know the index
+        let minNum = Number.MAX_SAFE_INTEGER;
+        let minIndex = -1;
+        for(let i=0; i<arr.length; i++) {
+            let subArr = arr[i];
+            let accNum = subArr.length;
+
+            if(accNum < minNum) {
+                minNum = accNum;
+                minIndex = i;
+            } else {
+
+            }
+        }
+
+        /*
+        // test
+        console.log('-- min --');
+        console.log(minNum);
+        console.log(arr[minIndex]);
+        */
+
+        // look for subList, has that minNum, push to arr
+        let compareArr = [];
+        for(let i=0; i<arr.length; i++) {
+            let subArr = arr[i];
+            let accNum = subArr.length;
+            if(accNum === minNum) {
+                compareArr.push(subArr);
+            } else {
+
+            }
+        }
+
+        // more than 2, need to compare max price
+        if(compareArr.length > 1) {
+            let maxSum = Number.MIN_SAFE_INTEGER;
+            let maxIndex = -1;
+            for(let i=0; i<compareArr.length; i++) {
+                let tmpArr = compareArr[i];
+
+                //console.log('-- tmp arr --');
+                //console.log(tmpArr);
+
+                let tmpSum = 0;
+                for(let j=0; j<tmpArr.length; j++) {
+                    let item = tmpArr[j];
+                    let price = item.price;
+                    tmpSum += price;
+                }
+
+                if(tmpSum > maxSum) {
+                    maxSum = tmpSum;
+                    maxIndex = i;
+                } else {
+
+                }
+            }
+
+            return [compareArr[maxIndex]];
+        }
+    }
+
+    doRounding(dp, t) {
+        let max = Number.MIN_SAFE_INTEGER;
+        let maxSubList = [];
+        for(let i=0; i<dp.length; i++) {
+            let subList = dp[i];
+
+            if(subList.length === 0) {
+                continue;
+            } else {
+                let sum = 0;
+                // Add up all elements and compare
+                for(let j=0; j<subList.length; j++) {
+                    let theList = subList[j];
+
+                    // the 1st element
+                    for(let k=0; k<theList.length; k++) {
+                        let item = theList[k];
+                        sum += item.num;
+                    }
+                }
+
+                if(sum > max) {
+                    max = sum;
+                    maxSubList = subList;
+                } else {
+
+                }
+            }
+        }
+
+        let obj = {
+            max,
+            maxSubList
+        };
+
+        return obj;
     }
 
     // the idea is to use slot to cache answer, then reuse them
@@ -50,7 +159,6 @@ export class Util {
         console.log(cands);
         console.log(t);
         */
-
 
         // sort
         cands.sort(this.sortFunc);
@@ -125,7 +233,29 @@ export class Util {
         //console.log('-- dp --');
         //console.log(dp);
 
-        return dp;
+        // no answer
+        let lastSubList = dp[t-1];
+        if(lastSubList.length === 0) {
+            // no result
+            let obj = this.doRounding(dp, t);
+            let maxSubList = obj.maxSubList;
+            return maxSubList;
+        } else {
+            // 1 sub list or 1+ sub list
+            //console.log('-- last sub --');
+            //console.log(lastSubList);
+
+            // 1 sub list
+            if(lastSubList.length === 1) {
+                return lastSubList;
+            } else {
+                // 1+ sub lists
+                let out = this.handleMultiSubLists(lastSubList);
+                //console.log('-- out --');
+                //console.log(out);
+                return out;
+            }
+        }
     }
 
 }
