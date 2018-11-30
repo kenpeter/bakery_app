@@ -10,24 +10,20 @@ class App extends Component {
         let def = this.getDef();
         this.util = new Util(def);
 
-        /*
         this.state = {
             vs5_num: 10,
             mb11_num: 14,
             cf_num: 13,
+            cartData: [],
         }
-        */
 
-
-        // test not combine num
+        /* // uncomment to see rounding
         this.state = {
-            vs5_num: 7,
+            vs5_num: 7, // this will do the rounding
             mb11_num: 14,
             cf_num: 13,
         }
-
-
-
+        */
     }
 
     handleVs5(e) {
@@ -90,7 +86,7 @@ class App extends Component {
                 },
                 {
                     num: 5,
-                    price: 5.95,
+                    price: 9.95,
                 },
                 {
                     num: 9,
@@ -104,11 +100,22 @@ class App extends Component {
 
     // build the input
     getInput(vs5_num, mb11_num, cf_num) {
+
         let input = [
             {VS5: vs5_num},
             {MB11: mb11_num},
             {CF: cf_num},
         ];
+
+        /*
+        // NOTE: debug
+        let input = [
+            {CF: cf_num},
+            {VS5: vs5_num},
+            {MB11: mb11_num},
+        ];
+        */
+
         return input;
     }
 
@@ -117,10 +124,41 @@ class App extends Component {
 
         let {vs5_num, mb11_num, cf_num} = this.state;
         let input = this.getInput(vs5_num, mb11_num, cf_num);
-        let out = this.util.calCart(input);
+        let cartData = this.util.calCart(input);
+        cartData = cartData.slice(0);
 
-        // output
-        console.log(JSON.stringify(out, null, 4));
+        this.setState({
+            cartData: cartData
+        })
+    }
+
+    displayCartdata() {
+        let {cartData} = this.state;
+        if(cartData.length === 0) {
+            return '';
+        } else {
+            return cartData.map((t, index) => {
+                let mygroup = t.mygroup;
+                let groupHtml = '';
+                for(let key in mygroup) {
+                    let num = mygroup[key];
+                    groupHtml += num + ' x ' + key + ' | ';
+                }
+
+                return (
+                    <div key={index}>
+                        <div>
+                            {t.orderNum} {t.key} {t.totalPrice}
+                        </div>
+                        <div>
+                            {groupHtml}
+                        </div>
+                    </div>
+                );
+            });
+        }
+
+
     }
 
     render() {
@@ -165,6 +203,8 @@ class App extends Component {
                             />
                         </div>
                     </div>
+
+                    {this.displayCartdata()}
 
                     <button>Submit</button>
                 </form>

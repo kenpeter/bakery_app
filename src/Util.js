@@ -8,6 +8,59 @@ export class Util {
         return a.num - b.num;
     }
 
+    getTotalPrice(res) {
+        res = res[0];
+
+        let sum = 0;
+        for(let i=0; i<res.length; i++) {
+            let item = res[i];
+            let price = item.price;
+            sum += price;
+        }
+
+        return '$' + Math.round(sum*100)/100;
+    }
+
+    getGroup(res) {
+        res = res[0];
+
+        let obj = {};
+
+        for(let i=0; i<res.length; i++) {
+            let item = res[i];
+            let price = '$' + Math.round(item.price*100)/100;
+            let num = item.num;
+            let key = num + ' ' + price;
+
+            /*
+            console.log('--');
+            console.log(key);
+            console.log(obj[key]);
+            */
+
+            if(obj[key] === undefined) {
+                obj[key] = 1;
+            } else {
+                obj[key] = obj[key] + 1;
+            }
+        }
+        return obj;
+    }
+
+    buildDisplayData(key, orderNum, res) {
+        let totalPrice = this.getTotalPrice(res);
+        let mygroup = this.getGroup(res);
+
+        let obj = {
+            orderNum,
+            key,
+            totalPrice,
+            mygroup,
+        };
+
+        return obj;
+    }
+
     calCart(inputArr) {
         let res = [];
 
@@ -27,13 +80,11 @@ export class Util {
             //console.log(`-- def --`);
             //console.log(itemDefArr);
 
-            let out = this.comSum(itemDefArr, orderNum);
+            let localRes = this.comSum(itemDefArr, orderNum);
+            // push html
+            let displayData = this.buildDisplayData(key, orderNum, localRes);
 
-            // test
-            //console.log('-- out --');
-            //console.log(out);
-
-            res.push(out);
+            res.push(displayData);
 
             // test
             //break;
