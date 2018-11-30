@@ -7,12 +7,13 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        this.util = new Util();
+        let def = this.getDef();
+        this.util = new Util(def);
 
         this.state = {
-            vs5_num: '',
-            mb11_num: '',
-            cf_num: '',
+            vs5_num: 10,
+            mb11_num: 14,
+            cf_num: 13,
         }
     }
 
@@ -41,12 +42,72 @@ class App extends Component {
     }
 
 
+    getDef() {
+        let def = {
+            VS5: [
+                {
+                    num: 3,
+                    price: 6.99,
+                },
+                {
+                    num: 5,
+                    price: 8.99,
+                },
+            ],
+
+            MB11: [
+                {
+                    num: 2,
+                    price: 9.95,
+                },
+                {
+                    num: 5,
+                    price: 16.95,
+                },
+                {
+                    num: 8,
+                    price: 24.95,
+                },
+            ],
+
+            CF: [
+                {
+                    num: 3,
+                    price: 5.95,
+                },
+                {
+                    num: 5,
+                    price: 5.95,
+                },
+                {
+                    num: 9,
+                    price: 16.99,
+                },
+            ],
+        };
+
+        return def;
+    }
+
+    // build the input
+    getInput(vs5_num, mb11_num, cf_num) {
+        let input = [
+            {VS5: vs5_num},
+            {MB11: mb11_num},
+            {CF: cf_num},
+        ];
+        return input;
+    }
+
     handleSubmit(e) {
         e.preventDefault();
 
         let {vs5_num, mb11_num, cf_num} = this.state;
+        let input = this.getInput(vs5_num, mb11_num, cf_num);
+        let out = this.util.calCart(input);
 
-        this.util.testme();
+        // output
+        //console.log(JSON.stringify(out, null, 4));
     }
 
     render() {
