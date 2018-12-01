@@ -132,6 +132,20 @@ class App extends Component {
         })
     }
 
+    buildGroupHtml(mygroup) {
+        let groupHtml = [];
+        for(let key in mygroup) {
+            let num = mygroup[key];
+            groupHtml.push(
+                <div key={key}>
+                    {num} x {key}
+                </div>
+            );
+        }
+
+        return groupHtml;
+    }
+
     displayCartdata() {
         let {cartData} = this.state;
         if(cartData.length === 0) {
@@ -139,11 +153,8 @@ class App extends Component {
         } else {
             return cartData.map((t, index) => {
                 let mygroup = t.mygroup;
-                let groupHtml = '';
-                for(let key in mygroup) {
-                    let num = mygroup[key];
-                    groupHtml += num + ' x ' + key + ' | ';
-                }
+                let groupHtml = this.buildGroupHtml(mygroup);
+
 
                 return (
                     <div key={index}>
@@ -153,6 +164,7 @@ class App extends Component {
                         <div>
                             {groupHtml}
                         </div>
+                        <hr/>
                     </div>
                 );
             });
